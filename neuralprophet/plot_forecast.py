@@ -688,7 +688,6 @@ def plot_components_plotly(
                 comp.update({"multiplicative": True})
             if one_period_per_season:
                 comp_name = comp["comp_name"]
-                print(comp_name)
                 trace_object = get_seasonality_plotly_props(m, fcst, **comp)
             else:
                 comp_name = f"season_{comp['comp_name']}"
@@ -878,6 +877,7 @@ def get_multiforecast_component_plotly_props(
             alpha_min = 0.2
             alpha_softness = 1.2
             alpha = alpha_min + alpha_softness * (1.0 - alpha_min) / (i + 1.0 * alpha_softness)
+
             if "residual" not in comp_name:
                 pass
             else:
@@ -889,9 +889,8 @@ def get_multiforecast_component_plotly_props(
                         name=plot_name,
                         x=fcst_t,
                         y=y,
-                        width=[1 for i in fcst_t],
                         text=text,
-                        marker_color="blue",
+                        marker_color=prediction_color,
                         opacity=alpha,
                     )
                 )
@@ -930,6 +929,7 @@ def get_multiforecast_component_plotly_props(
                     opacity=alpha,
                 )
             )
+
         else:
             traces.append(
                 go.Scatter(
@@ -943,7 +943,7 @@ def get_multiforecast_component_plotly_props(
                 )
             )
 
-    xaxis = go.layout.XAxis(type="date", range=range_x)
+    xaxis = go.layout.XAxis(type="date")  # range=range_x)
     yaxis = go.layout.YAxis(
         rangemode="normal" if comp_name == "trend" else "tozero",
         title=go.layout.yaxis.Title(text=plot_name),
